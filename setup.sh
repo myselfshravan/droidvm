@@ -3,10 +3,10 @@
 # DroidVM Setup Script
 # Turn your old Android phone into a cloud server
 #
-# Usage: curl -sSL https://droidvm.dev/setup | bash
+# Usage: curl -fsSL https://raw.githubusercontent.com/myselfshravan/droidvm/main/setup.sh | bash
 #        or: ./setup.sh [--level basic|private|public|full]
 #
-# https://github.com/myselfshravan/droidvm-setup
+# https://github.com/myselfshravan/droidvm
 
 set -e
 
@@ -30,7 +30,7 @@ STAR="★"
 VERSION="1.0.0"
 
 # Globals
-INSTALL_DIR="$HOME/droidvm-setup"
+INSTALL_DIR="$HOME/droidvm"
 LOG_FILE="$INSTALL_DIR/setup.log"
 
 # ==============================================================================
@@ -328,7 +328,7 @@ setup_cloudflared() {
 
     proot-distro login ubuntu -- bash -c "
         cd /root
-        wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -O cloudflared
+        wget -q https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-arm64 -O cloudflared
         chmod +x cloudflared
         mv cloudflared /usr/local/bin/
         cloudflared --version
@@ -394,27 +394,15 @@ setup_droidvm_tools() {
 
     log "Installing DroidVM Tools"
 
-    echo -e "${CYAN}Cloning droidvm-tools...${NC}"
-    git clone https://github.com/myselfshravan/droidvm-tools.git ~/droidvm-tools >> "$LOG_FILE" 2>&1
+    echo -e "${CYAN}Cloning droidvm...${NC}"
+    git clone https://github.com/myselfshravan/droidvm.git ~/droidvm >> "$LOG_FILE" 2>&1
     print_success "Repository cloned"
 
-    cd ~/droidvm-tools
+    cd ~/droidvm
 
-    echo -e "${CYAN}Installing dependencies (this may take a while)...${NC}"
-    uv sync >> "$LOG_FILE" 2>&1
-    print_success "Dependencies installed"
-
-    # Start in tmux
-    tmux new-session -d -s droidvm-tools "cd ~/droidvm-tools && uv run start-server"
-    print_success "API server started in tmux session 'droidvm-tools'"
-
-    # Verify
-    sleep 3
-    if curl -s http://localhost:8000/health | grep -q "healthy"; then
-        print_success "API is running and healthy"
-    else
-        print_warning "API might need a moment to start"
-    fi
+    print_info "DroidVM repository cloned to ~/droidvm"
+    print_info "You can now build your own API using the setup as reference"
+    print_info "See docs/ folder for guides and examples"
 
     log "DroidVM Tools setup completed"
 }
@@ -447,12 +435,12 @@ finalize() {
     echo ""
 
     echo "Next steps:"
-    echo "  1. Test API: curl http://localhost:8000/status"
-    echo "  2. See logs: tmux attach -t droidvm-tools"
-    echo "  3. Read docs: less ~/droidvm-setup/docs/README.md"
+    echo "  1. Build your API following the guides in ~/droidvm/docs/"
+    echo "  2. Test with: curl http://localhost:8000/status"
+    echo "  3. Read docs: less ~/droidvm/README.md"
     echo ""
 
-    echo -e "${CYAN}Need help? https://github.com/myselfshravan/droidvm-setup/issues${NC}"
+    echo -e "${CYAN}Need help? https://github.com/myselfshravan/droidvm/issues${NC}"
     echo ""
     echo -e "${GREEN}Happy hacking! ${STAR}${NC}"
 
