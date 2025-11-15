@@ -83,3 +83,5 @@ secrets/
 *.bak
 *.backup
 *~
+docs/website_context.md
+docs/WEBSITE_FIXES.md
