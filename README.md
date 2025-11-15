@@ -99,34 +99,39 @@ droidvm-tools status --json  # Full JSON output
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    Internet                          │
-└─────────────────┬───────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────┐
-│            Cloudflare Tunnel                         │
-│   api.droidvm.dev → localhost:8000                   │
-│   app.droidvm.dev → localhost:8090                   │
-└─────────────────┬───────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────┐
-│         proot-distro (Ubuntu)                        │
-│              cloudflared                             │
-└─────────────────┬───────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────┐
-│                 Termux                               │
-│  ┌─────────────┐ ┌─────────────┐ ┌──────────────┐  │
-│  │   SSH       │ │   Python    │ │    tmux      │  │
-│  │  (8022)     │ │   FastAPI   │ │  sessions    │  │
-│  └─────────────┘ └─────────────┘ └──────────────┘  │
-└─────────────────┬───────────────────────────────────┘
-                  │
-┌─────────────────▼───────────────────────────────────┐
-│              Android OS (Stock)                      │
-│                  No Root                             │
-└─────────────────────────────────────────────────────┘
+```mermaid
+graph TD
+    Internet[Internet]
+
+    subgraph Cloudflare["Cloudflare Tunnel"]
+        CF_API["api.droidvm.dev → localhost:8000"]
+        CF_APP["app.droidvm.dev → localhost:8090"]
+    end
+
+    subgraph Proot["proot-distro (Ubuntu)"]
+        Cloudflared["cloudflared"]
+    end
+
+    subgraph Termux["Termux Environment"]
+        SSH["SSH<br/>Port 8022"]
+        Python["Python<br/>FastAPI"]
+        Tmux["tmux<br/>Sessions"]
+    end
+
+    subgraph Android["Android OS (Stock, No Root)"]
+        Phone["Physical Device"]
+    end
+
+    Internet --> Cloudflare
+    Cloudflare --> Proot
+    Proot --> Termux
+    Termux --> Android
+
+    style Internet fill:#e1f5fe
+    style Cloudflare fill:#fff3e0
+    style Proot fill:#f3e5f5
+    style Termux fill:#e8f5e9
+    style Android fill:#fce4ec
 ```
 
 ---
@@ -160,11 +165,11 @@ droidvm-tools status --json  # Full JSON output
 
 ## Documentation
 
-- [Complete Technical Context](DROIDVM_CONTEXT.md) - Deep dive into architecture
-- [Open Source Plan](OPEN_SOURCE_PLAN.md) - Project roadmap and structure
-- [Project Summary](PROJECT_SUMMARY.md) - High-level overview
-- [Cloudflare Tunnel Guide](context_cloudflare.md) - Setting up public domains
-- [ngrok Setup Guide](context_ngrok.md) - Alternative public access method
+- [Complete Technical Context](docs/DROIDVM_CONTEXT.md) - Deep dive into architecture
+- [Open Source Plan](docs/OPEN_SOURCE_PLAN.md) - Project roadmap and structure
+- [Project Summary](docs/PROJECT_SUMMARY.md) - High-level overview
+- [Cloudflare Tunnel Guide](docs/context_cloudflare.md) - Setting up public domains
+- [ngrok Setup Guide](docs/context_ngrok.md) - Alternative public access method
 
 ---
 
