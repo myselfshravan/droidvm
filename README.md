@@ -127,11 +127,11 @@ graph TD
     Proot --> Termux
     Termux --> Android
 
-    style Internet fill:#e1f5fe
-    style Cloudflare fill:#fff3e0
-    style Proot fill:#f3e5f5
-    style Termux fill:#e8f5e9
-    style Android fill:#fce4ec
+    style Internet fill:#0d47a1,stroke:#1565c0,color:#ffffff
+    style Cloudflare fill:#e65100,stroke:#ef6c00,color:#ffffff
+    style Proot fill:#4a148c,stroke:#6a1b9a,color:#ffffff
+    style Termux fill:#1b5e20,stroke:#2e7d32,color:#ffffff
+    style Android fill:#b71c1c,stroke:#c62828,color:#ffffff
 ```
 
 ---
