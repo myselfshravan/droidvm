@@ -1,33 +1,30 @@
 # DroidVM
 
-> Turn your old Android phone into a cloud-accessible server. No root required.
+> Turn your old Android phone into a home server. No root required.
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-api.droidvm.dev-brightgreen)](https://api.droidvm.dev/status)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Android%20(Termux)-blue)](https://termux.dev)
+[![Platform](<https://img.shields.io/badge/Platform-Android%20(Termux)-blue>)](https://termux.dev)
 
 ---
 
 ## What is DroidVM?
 
-DroidVM transforms old Android phones into tiny, cloud-accessible servers. Your phone becomes a legitimate cloud node with:
+DroidVM is a setup guide and script for turning an old Android phone into a mini home server using [Termux](https://termux.dev). Instead of letting your old phone collect dust, you can run a terminal emulator and host services from it.
 
-- **Real domains** (api.yourname.dev) via Cloudflare Tunnel
-- **Automatic HTTPS** and DDoS protection
-- **No port forwarding** or ngrok limitations
-- **24/7 availability** with proper session management
+The phone runs Termux - a Linux environment for Android. From there, you can SSH into it, run Python scripts, set up tunnels, and even expose services to the internet via Cloudflare Tunnel.
 
-**Live Example:** [https://api.droidvm.dev/status](https://api.droidvm.dev/status) - Real-time stats from an actual phone in a drawer.
+**Live Example:** [https://api.droidvm.dev/status](https://api.droidvm.dev/status) - A simple status API running on an actual phone at home.
 
 ---
 
 ## Why DroidVM?
 
-- **Free cloud VM** - You already own the hardware
-- **No monthly fees** - Unlike traditional cloud providers
-- **Eco-friendly** - E-waste becomes infrastructure
-- **Low power** - ~5W vs 50-100W for a traditional server
-- **Learn by doing** - Linux, networking, tunneling hands-on
+- Old phone sitting in a drawer? Give it a purpose
+- Learn how Linux, SSH, networking, and tunneling actually work
+- No monthly cloud bills - you own the hardware
+- Understand in-depth how home infrastructure can work
+- Fun project to build
 
 ---
 
@@ -39,6 +36,7 @@ curl -fsSL https://raw.githubusercontent.com/myselfshravan/droidvm/main/setup.sh
 ```
 
 Or clone and run:
+
 ```bash
 git clone https://github.com/myselfshravan/droidvm.git
 cd droidvm
@@ -46,54 +44,37 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-The interactive setup wizard will guide you through:
+The interactive setup wizard guides you through:
+
 1. Installing base packages (openssh, tmux, python, etc.)
 2. Configuring SSH access on port 8022
-3. Setting up tmux for session persistence
-4. Installing Python environment
-5. Configuring Tailscale for private VPN access
-6. Setting up proot-distro with Ubuntu
-7. Installing DroidVM Tools API
+3. Setting up tmux for persistent sessions
+4. Installing Python environment with uv
+5. Setting up proot-distro with Ubuntu
+6. Optionally configuring Cloudflare Tunnel for public access
+7. Optionally setting up Tailscale for VPN access
 
 ---
 
-## Features
+## What You Get
 
 ### Access Methods
 
-| Method | Use Case | Example |
-|--------|----------|---------|
-| **Local WiFi** | Same network | `ssh -p 8022 user@192.168.1.x` |
-| **Tailscale VPN** | Private, anywhere | `ssh -p 8022 user@100.x.x.x` |
-| **Cloudflare Tunnel** | Public internet | `https://api.droidvm.dev` |
+| Method                | Use Case          | Example                        |
+| --------------------- | ----------------- | ------------------------------ |
+| **Local WiFi**        | Same network      | `ssh -p 8022 user@192.168.1.x` |
+| **Tailscale VPN**     | Private, anywhere | `ssh -p 8022 user@100.x.x.x`   |
+| **Cloudflare Tunnel** | Public internet   | `https://api.yourdomain.dev`   |
 
-### DroidVM Tools API
+### Example: Status API
 
-FastAPI-based monitoring and management:
+You can build a simple monitoring API:
 
 ```bash
-# System information
 curl https://api.droidvm.dev/status
-
-# Individual endpoints
-curl https://api.droidvm.dev/system/memory
-curl https://api.droidvm.dev/system/cpu
-curl https://api.droidvm.dev/system/processes
-curl https://api.droidvm.dev/network/info
 ```
 
-**API Documentation:** [https://api.droidvm.dev/docs](https://api.droidvm.dev/docs)
-
-### CLI Tools
-
-```bash
-droidvm-tools status     # Comprehensive overview
-droidvm-tools memory     # Memory usage
-droidvm-tools cpu        # CPU information
-droidvm-tools network    # Network interfaces
-droidvm-tools tmux       # List tmux sessions
-droidvm-tools status --json  # Full JSON output
-```
+Returns real-time info like memory usage, CPU cores, uptime, etc.
 
 ---
 
@@ -105,7 +86,6 @@ graph TD
 
     subgraph Cloudflare["Cloudflare Tunnel"]
         CF_API["api.droidvm.dev → localhost:8000"]
-        CF_APP["app.droidvm.dev → localhost:8090"]
     end
 
     subgraph Proot["proot-distro (Ubuntu)"]
@@ -134,19 +114,22 @@ graph TD
     style Android fill:#b71c1c,stroke:#c62828,color:#ffffff
 ```
 
+Traffic flows: Internet → Cloudflare Tunnel → cloudflared (running in Ubuntu proot) → Services in Termux → Android OS
+
 ---
 
 ## Requirements
 
 ### Hardware
+
 - Android phone (Android 7+, tested on Android 14)
 - ARM64 architecture (most modern phones)
-- 2GB+ RAM recommended
 - WiFi connection
 
 ### Software
-- [Termux](https://f-droid.org/packages/com.termux/) (F-Droid version recommended)
-- Battery optimization **DISABLED** for Termux
+
+- [Termux](https://f-droid.org/packages/com.termux/) (F-Droid version - Play Store version is outdated)
+- Battery optimization **DISABLED** for Termux (important for keeping services running)
 - (Optional) Cloudflare account for public domains
 - (Optional) Tailscale account for private VPN
 
@@ -154,40 +137,33 @@ graph TD
 
 ## Use Cases
 
-- **Personal API server** - Host your own REST APIs
+- **Personal API server** - Host simple REST APIs
 - **Webhook receiver** - GitHub, Stripe, Discord webhooks
-- **Home automation hub** - Control IoT devices
-- **Development testing** - Test on real ARM hardware
-- **File sharing** - Personal cloud storage
-- **Learning platform** - Practice Linux, networking, DevOps
+- **Home automation** - Control IoT devices
+- **Learning platform** - Practice Linux, networking, DevOps hands-on
+- **File server** - Simple file sharing on your network
 
 ---
 
-## Documentation
-
-- [Complete Technical Context](docs/DROIDVM_CONTEXT.md) - Deep dive into architecture
-- [Open Source Plan](docs/OPEN_SOURCE_PLAN.md) - Project roadmap and structure
-- [Project Summary](docs/PROJECT_SUMMARY.md) - High-level overview
-- [Cloudflare Tunnel Guide](docs/context_cloudflare.md) - Setting up public domains
-- [ngrok Setup Guide](docs/context_ngrok.md) - Alternative public access method
-
----
-
-## Known Limitations
+## Limitations
 
 Due to Android/Termux sandboxing, some system info is unavailable:
 
 **Not Available:**
+
 - Battery info (can't access `/sys/class/power_supply`)
 - CPU frequency (can't read kernel freq info)
 - Network I/O counters (permission denied)
+- Direct hardware sensor access (without Termux:API)
 
-**Works Perfectly:**
+**Works Fine:**
+
 - Memory usage (total, available, used)
-- Process listing and management
+- Process listing
 - tmux session management
-- Disk usage for specific paths
-- Network hostname and connectivity
+- Disk usage
+- Network connectivity
+- Running web servers
 
 ---
 
@@ -197,39 +173,45 @@ Due to Android/Termux sandboxing, some system info is unavailable:
 Base: Android (stock, no root) + Termux
 Linux: proot-distro with Ubuntu
 Python: 3.12 with uv package manager
-API: FastAPI 0.103.2 + Pydantic v1.10
-Server: Uvicorn 0.23.2
+Server: Uvicorn (if running Python APIs)
 Session: tmux
 SSH: OpenSSH (port 8022)
-VPN: Tailscale
-Tunnel: Cloudflare Tunnel (cloudflared)
+VPN: Tailscale (optional)
+Tunnel: Cloudflare Tunnel (optional)
 ```
 
-**Note:** Uses Pydantic v1.x to avoid Rust compilation requirements on ARM.
+**Note:** If using FastAPI, stick with Pydantic v1.x to avoid Rust compilation requirements on ARM.
+
+---
+
+## Documentation
+
+- [Technical Context](docs/DROIDVM_CONTEXT.md) - Deep dive into the architecture
+- [Open Source Plan](docs/OPEN_SOURCE_PLAN.md) - Project structure and plans
+- [Project Summary](docs/PROJECT_SUMMARY.md) - High-level overview
+- [Cloudflare Tunnel Guide](docs/context_cloudflare.md) - Setting up public domains
+- [ngrok Setup Guide](docs/context_ngrok.md) - Alternative public access method
+
+---
+
+## Learn More About Termux
+
+- [Termux Wiki](https://wiki.termux.com/wiki/Main_Page) - Official documentation
+- [Termux:API](https://wiki.termux.com/wiki/Termux:API) - Access Android APIs from command line
+- [What is Termux?](https://www.reddit.com/r/termux/comments/zi8j6p/what_is_termux_i_came_across_this_and_dont_know/) - Reddit discussion explaining Termux and all its potential.
 
 ---
 
 ## Contributing
 
-Contributions welcome! Whether it's:
+Contributions welcome:
+
 - Bug fixes
 - Documentation improvements
-- New features
 - Testing on different devices
-- Sharing your DroidVM setup
+- Sharing your setup
 
 Please open an issue or submit a PR.
-
----
-
-## Roadmap
-
-- [ ] One-command installer improvements
-- [ ] Web dashboard for monitoring
-- [ ] Docker-like container support
-- [ ] Automated backup solutions
-- [ ] Multi-phone cluster support
-- [ ] docs.droidvm.dev (hosted on the phone itself!)
 
 ---
 
@@ -249,12 +231,14 @@ MIT License - See [LICENSE](LICENSE) file.
 
 ---
 
-## The Inception
+## Why I Built This
 
-This README describes how to run servers on your phone. The API it documents runs on a phone. Soon, the documentation website itself will be hosted on the phone.
+Had an old phone lying around and wanted to see if I could actually run a web server on it and access it from the internet. Turns out you can.
 
-**DroidVM: An old phone, a lot of stubbornness, and a beautiful little server on the internet.**
+The phone now sits at home, connected to WiFi and power, running a simple status API. It's not replacing a real server anytime soon, but it's satisfying to have built it. Learned a lot about SSH, tunneling, and working within Android's sandboxing limitations.
+
+It was fun building this :)
 
 ---
 
-*Built with determination by [@myselfshravan](https://github.com/myselfshravan)*
+_Built by [@myselfshravan](https://github.com/myselfshravan)_
